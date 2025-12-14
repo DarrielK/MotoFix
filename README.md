@@ -1,5 +1,5 @@
 # MotoFix
-## Anggota Tim:
+## Anggota Tim 1:
 - Muhammad Fachri Alfarizi
 - Darriel Khalil Maulana Haris
 - Muhammad Nur Fauzi
