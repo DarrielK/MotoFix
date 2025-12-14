@@ -15,28 +15,34 @@ class AdminController extends Controller
 {
     public function __invoke(Request $request)
     {
+        // Filter Tanggal
         $filter = $request->get('filter', 'today');
 
         [$startDate, $endDate] = $this->resolveDateFilter($filter, $request);
 
+        // Statistik Angka Barang Masuk
         $barangMasuk = ItemIn::whereBetween('date', [$startDate, $endDate])
             ->sum('qty');
 
+        // Statistik Angka Barang Keluar
         $barangKeluar = ItemOut::whereBetween('created_at', [$startDate, $endDate])
             ->sum('qty');
 
+        // Statistik Angka Pemasukan
         $pemasukan = Transaction::whereBetween('created_at', [$startDate, $endDate])
             ->sum('total');
 
+        // Statistik Angka Pengeluaran
         $pengeluaran = ItemIn::whereBetween('date', [$startDate, $endDate])
             ->sum('subtotal');
 
         $totalItems = Item::count();
         $stockLow   = Item::where('stock', '<=', 5)->count();
 
-        
+        // Filter Tanggal Custom
         $period = CarbonPeriod::create($startDate, $endDate);
 
+        // Chart Barang Masuk & Keluar
         $labels = [];
         $barangMasukData = [];
         $barangKeluarData = [];
@@ -51,6 +57,7 @@ class AdminController extends Controller
                 ->sum('qty');
         }
 
+        // Chart Bulanan Pemasukan
         $monthlyIncome = Transaction::select(
             DB::raw('MONTH(created_at) as month'),
             DB::raw('SUM(total) as total')
@@ -60,7 +67,7 @@ class AdminController extends Controller
         ->orderBy('month')
         ->pluck('total', 'month');
 
-
+        // Chart Bulanan Pengeluaran
         $monthlyExpense = ItemIn::select(
                 DB::raw('MONTH(date) as month'),
                 DB::raw('SUM(subtotal) as total')
@@ -80,7 +87,7 @@ class AdminController extends Controller
             $pengeluaranBulanan[] = $monthlyExpense[$i] ?? 0;
         }
 
-
+        // Kirim Data ke View
         return view('admin.index', compact(
             'barangMasuk',
             'barangKeluar',
@@ -101,18 +108,21 @@ class AdminController extends Controller
     private function resolveDateFilter(string $filter, Request $request): array
     {
         switch ($filter) {
+            // Filter Weekly
             case 'weekly':
                 return [
                     Carbon::now()->startOfWeek(),
                     Carbon::now()->endOfWeek(),
                 ];
 
+            // Filter Monthly
             case 'monthly':
                 return [
                     Carbon::now()->startOfMonth(),
                     Carbon::now()->endOfMonth(),
                 ];
 
+            // Filter Custom
             case 'custom':
                 $request->validate([
                     'start_date' => 'required|date',
@@ -124,6 +134,7 @@ class AdminController extends Controller
                     Carbon::parse($request->end_date)->endOfDay(),
                 ];
 
+            // Filter Today Default
             case 'today':
             default:
                 return [

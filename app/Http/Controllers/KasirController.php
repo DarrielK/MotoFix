@@ -15,14 +15,19 @@ class KasirController extends Controller
 {
     public function index()
     {
+        // Mengambil Data Items
         $items = Item::all();
+
+        // Mengambil Data Service
         $services = Service::all();
 
+        // Mengirim Data Ke View
         return view('kasir.index', compact('items', 'services'));
     }
 
     public function store(Request $request)
     {
+        // Validasi Data Transaction
         $request->validate([
             'customer_name' => 'required|string',
             'mechanic_name' => 'nullable|string',
@@ -101,6 +106,7 @@ class KasirController extends Controller
 
     public function searchItems(Request $request)
     {
+        // Fitur Search Item
         $query = $request->get('search', '');
         $items = Item::where('name', 'like', "%{$query}%")
                 ->orWhere('code', 'like', "%{$query}%")
@@ -134,6 +140,7 @@ class KasirController extends Controller
 
     public function searchServices(Request $request)
     {
+        // Fitur Search Service
         $query = $request->get('search', '');
         $services = Service::where('name', 'like', "%{$query}%")->get();
 

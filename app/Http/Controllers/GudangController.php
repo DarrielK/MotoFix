@@ -45,12 +45,12 @@ class GudangController extends Controller
         // stok menipis
         $totalItems = Item::where('stock', '<=', 5)->count();
 
-        // normal response
         return view('gudang.index' , compact('items','categories', 'totalItems'));
     }
 
     public function store(Request $request)
     {
+        // Validasi Struktur Data Items
         $request->validate([
             'code' => 'required|unique:items',
             'name' => 'required',
@@ -61,6 +61,7 @@ class GudangController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+        // Mengirim & Menyimpan Data
         Item::create($request->all());
 
         return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
@@ -70,11 +71,9 @@ class GudangController extends Controller
         // Memilih Data Items Menggunakan id
         $gudang = Item::find($id);
 
-        // Menampilkan dan Mengirim Variable gudang ke View
         return view('gudang/index', compact('gudang'));
     }
 
-    // Kurang item $item
     public function update(Request $request, Item $items, $id) 
     {
         // Memilih Data Items Menggunakan id
@@ -101,11 +100,11 @@ class GudangController extends Controller
             'category_id' => $request->category_id,
         ]);
 
-        // Mengarahkan Kembali ke Halaman Gudang Setelah Proses Update
         return redirect()->back();
     }
 
     public function destroy($id) {
+        // Fitur Hapus Items
         $items = Item::findOrFail($id);
 
         $items->delete();
@@ -115,6 +114,7 @@ class GudangController extends Controller
 
     public function simpanBarangMasuk(Request $request)
     {
+        // Validasi
         $request->validate([
             'item_id' => 'required|exists:items,id',
             'qty' => 'required|numeric|min:1',
@@ -122,10 +122,13 @@ class GudangController extends Controller
             'date' => 'required|date'
         ]);
 
+        // Konversi Format Tanggal
         $formattedDate = \Carbon\Carbon::createFromFormat('m/d/Y', $request->date)->format('Y-m-d');
 
+        // Hitung Subtotal
         $subtotal = $request->qty * $request->price;
 
+        // mengirim dan Menyimpan Data
         ItemIn::create([
             'item_id' => $request->item_id,
             'qty' => $request->qty,
@@ -136,6 +139,8 @@ class GudangController extends Controller
         ]);
 
         $item = Item::findOrFail($request->item_id);
+        
+        // Update Stock Item
         $item->increment('stock', $request->qty);
 
         return redirect()->back()->with('success', 'Barang masuk berhasil disimpan.');
@@ -143,7 +148,10 @@ class GudangController extends Controller
 
     public function service(Request $request)
     {
+        // Ngambil Data Items
         $items=Item::all();
+
+        // Fitur Search
         $search = $request->get('search');
         $services = Service::query()
             ->when($search, function ($query, $search) {
@@ -159,11 +167,13 @@ class GudangController extends Controller
 
     public function serviceStore(Request $request)
     {
+        // Validasi Data Service
         $request->validate([
             'name'=>'required',
             'price'=>'required',
         ]);
 
+        // Mengirim dan Menyimpan Data Service
         Service::create([
             'name'  => $request->name,
             'price' => str_replace('.', '', $request->price),
@@ -174,6 +184,7 @@ class GudangController extends Controller
 
     public function serviceEdit($id)
     {
+        // Mencari Id
         $gudang = Service::find($id);
 
         return view('gudang/service', compact('gudang'));
@@ -181,13 +192,16 @@ class GudangController extends Controller
 
     public function serviceUpdate(Request $request, Service $services, $id)
     {
+        // Mencari Id
         $services = Service::find($id);
 
+        // Validasi Data Service
         $request->validate([
             'name' => 'required',
             'price' => 'required',
         ]);
 
+        // Update Data Service
         $services->update([
             'name'  => $request->name,
             'price' => str_replace('.', '', $request->price),
@@ -197,6 +211,7 @@ class GudangController extends Controller
     }
 
     public function serviceDestroy($id) {
+        // Fitur Hapus Data
         $service = Service::findOrFail($id);
 
         $service->delete();
@@ -206,10 +221,12 @@ class GudangController extends Controller
 
     public function categoryStore(Request $request)
     {
+        // Validasi Data Category
         $request->validate([
             'name' => 'required',
         ]);
 
+        // Mengirim dan Menyimpan Data Category
         Category::create([
             'name' => $request->name,
         ]);
@@ -219,6 +236,7 @@ class GudangController extends Controller
 
     public function categoryEdit($id)
     {
+        // Mencari Id Category
         $category = Category::findOrFail($id);
 
         return view('gudang.category-edit', compact('category'));
@@ -226,12 +244,15 @@ class GudangController extends Controller
 
     public function categoryUpdate(Request $request, $id)
     {
+        // Mencari Id
         $category = Category::findOrFail($id);
 
+        // Validasi Data Category
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
+        // Update Data Category
         $category->update([
             'name' => $request->name,
         ]);
@@ -240,7 +261,8 @@ class GudangController extends Controller
             ->with('success', 'Category berhasil diperbarui');
     }
 
-    public function categoryDestroy($id) {
+    public function categoryDestroy($id) { 
+        // Fitur Hapus Data Category
         $category = Category::findOrFail($id);
 
         $category->delete();
@@ -250,6 +272,7 @@ class GudangController extends Controller
 
     public function notification()
     {
+        // Fitur Stock Items Menipis
         $items = Item::where('stock', '<=', 5)->orderBy('stock', 'asc')->get();
 
         $totalItems = $items->count();
@@ -261,6 +284,7 @@ class GudangController extends Controller
 
     public function laporanBarangMasuk(Request $request)
     {
+        // FItur Barang Masuk
         $query = ItemIn::with('item');
 
         if ($request->has('filter')) {
@@ -295,6 +319,7 @@ class GudangController extends Controller
 
     public function laporanBarangKeluar(Request $request)
     {
+        // Fitur Barang Keluar
         $query = ItemOut::with(['item', 'transaction']);
 
         if ($request->has('filter')) {
