@@ -25,8 +25,16 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/gudang/notification', [GudangController::class, 'notification'])->name('gudang.notification');
     Route::get('/gudang/laporan/barang-masuk', [GudangController::class, 'laporanBarangMasuk'])->name('gudang.laporan.barang-masuk');
     Route::get('/gudang/laporan/barang-keluar', [GudangController::class, 'laporanBarangKeluar'])->name('gudang.laporan.barang-keluar');
-
+    
     Route::get('/gudang/service', [GudangController::class, 'service'])->name('gudang.service');
+    Route::post('/gudang/service', [GudangController::class, 'serviceStore'])->name('gudang.service.store');
+    Route::get('/gudang/service/{id}/edit', [GudangController::class, 'serviceEdit'])->name('gudang.service.edit');
+    Route::put('/gudang/service/{id}', [GudangController::class, 'serviceUpdate'])->name('gudang.service.update');
+
+    Route::get('/gudang/category', [GudangController::class, 'category'])->name('gudang.category');
+    Route::post('/gudang/category', [GudangController::class, 'categoryStore'])->name('gudang.category.store');
+    Route::get('/gudang/category/{id}/edit', [GudangController::class, 'categoryEdit'])->name('gudang.category.edit');
+    Route::put('/gudang/category/{id}', [GudangController::class, 'categoryUpdate'])->name('gudang.category.update');
 
     Route::resource('kasir', KasirController::class)->except('show');
     Route::get('/kasir/search-items', [KasirController::class, 'searchItems'])->name('kasir.search.items');

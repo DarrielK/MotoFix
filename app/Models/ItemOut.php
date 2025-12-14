@@ -19,6 +19,11 @@ class ItemOut extends Model
         'subtotal',
     ];
 
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
+
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class, 'item_id');

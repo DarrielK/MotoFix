@@ -75,7 +75,8 @@ class GudangController extends Controller
     }
 
     // Kurang item $item
-    public function update(Request $request, Item $items, $id) {
+    public function update(Request $request, Item $items, $id) 
+    {
         // Memilih Data Items Menggunakan id
         $items = Item::find($id);
 
@@ -104,22 +105,6 @@ class GudangController extends Controller
         return redirect()->back();
     }
 
-    public function service(Request $request)
-    {
-        $items=Item::all();
-        $search = $request->get('search');
-        $services = Service::query()
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%$search%");
-            })
-            ->orderBy('name', 'asc')
-            ->get();
-
-        $totalItems = Item::where('stock', '<=', 5)->count();
-
-        return view('gudang.service', compact('services', 'items', 'totalItems'));
-    }
-
     public function simpanBarangMasuk(Request $request)
     {
         $request->validate([
@@ -143,12 +128,100 @@ class GudangController extends Controller
         return redirect()->back()->with('success', 'Barang masuk berhasil disimpan.');
     }
 
+    public function service(Request $request)
+    {
+        $items=Item::all();
+        $search = $request->get('search');
+        $services = Service::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+        
+        $categories = Category::orderBy('name', 'asc')->get(); 
+
+        return view('gudang.service', compact('services', 'items', 'categories'));
+    }
+
+    public function serviceStore(Request $request)
+    {
+        $request->validate([
+            'name'=>'required',
+            'price'=>'required',
+        ]);
+
+        Service::create($request->all());
+
+        return redirect()->back()->with('success', 'Service berhasil ditambahkan');
+    }
+
+    public function serviceEdit($id)
+    {
+        $gudang = Service::find($id);
+
+        return view('gudang/service', compact('gudang'));
+    }
+
+    public function serviceUpdate(Request $request, Service $services, $id)
+    {
+        $services = Service::find($id);
+
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+        ]);
+
+        $services->update([
+            'name' => $request->name,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function categoryStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Category berhasil ditambahkan');
+    }
+
+    public function categoryEdit($id)
+    {
+        $category = Category::findOrFail($id);
+
+        return view('gudang.category-edit', compact('category'));
+    }
+
+    public function categoryUpdate(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('gudang.service')
+            ->with('success', 'Category berhasil diperbarui');
+    }
+
     public function notification()
     {
         $items = Item::where('stock', '<=', 5)->orderBy('stock', 'asc')->get();
 
         $totalItems = $items->count();
-        $stockLow = $items->where('stock', '>', 0)->count(); // stock 1 - 5
+        $stockLow = $items->where('stock', '>', 0)->count();
         $stockEmpty = $items->where('stock', '=', 0)->count();
 
         return view('gudang.notification', compact('items', 'totalItems', 'stockLow', 'stockEmpty'));
