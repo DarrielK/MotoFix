@@ -5,11 +5,11 @@
 - Muhammad Nur Fauzi
 
 ## About Project
-    MotoFix adalah sistem manajemen bengkel digital berbasis web (Private ERP) yang mengintegrasikan manajemen stok cerdas, kasir (POS), dan laporan keuangan real-time untuk mencegah kebocoran stok dan mempercepat transaksi.
-    MotoFix adalah aplikasi berbasis web yang dibangun menggunakan Framework Laravel. Sistem ini dirancang sebagai private system (Intranet/Cloud) yang membagi akses pengguna menjadi tiga peran krusial: Admin, Gudang, dan Kasir, guna memastikan keamanan data dan pembagian tugas yang jelas dalam ekosistem bengkel.
+MotoFix adalah sistem manajemen bengkel digital berbasis web (Private ERP) yang mengintegrasikan manajemen stok cerdas, kasir (POS), dan laporan keuangan real-time untuk mencegah kebocoran stok dan mempercepat transaksi.
+MotoFix adalah aplikasi berbasis web yang dibangun menggunakan Framework Laravel. Sistem ini dirancang sebagai private system (Intranet/Cloud) yang membagi akses pengguna menjadi tiga peran krusial: Admin, Gudang, dan Kasir, guna memastikan keamanan data dan pembagian tugas yang jelas dalam ekosistem bengkel.
 
 ## The Problem
-    Ketidakefisienan operasional pada bengkel motor konvensional (UMKM) akibat pencatatan manual. Masalah spesifik meliputi: kebocoran stok barang (sparepart hilang/tidak tercatat), kesulitan melacak riwayat servis pelanggan, dan tidak adanya transparansi laporan keuangan harian yang memicu kerugian finansial bagi pemilik bengkel.
+Ketidakefisienan operasional pada bengkel motor konvensional (UMKM) akibat pencatatan manual. Masalah spesifik meliputi: kebocoran stok barang (sparepart hilang/tidak tercatat), kesulitan melacak riwayat servis pelanggan, dan tidak adanya transparansi laporan keuangan harian yang memicu kerugian finansial bagi pemilik bengkel.
 
 ## Teknologi Yang Digunakan:
 - Laravel 11
