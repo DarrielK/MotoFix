@@ -13,9 +13,10 @@ class ItemIn extends Model
     protected $fillable = [
         'item_id',
         'qty',
+        'price',
+        'subtotal',
         'date',
         'received_by',
-        'description',
     ];
 
     public function item()

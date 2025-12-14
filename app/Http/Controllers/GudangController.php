@@ -105,19 +105,32 @@ class GudangController extends Controller
         return redirect()->back();
     }
 
+    public function destroy($id) {
+        $items = Item::findOrFail($id);
+
+        $items->delete();
+
+        return redirect()->route('gudang.index');
+    }
+
     public function simpanBarangMasuk(Request $request)
     {
         $request->validate([
             'item_id' => 'required|exists:items,id',
             'qty' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:0',
             'date' => 'required|date'
         ]);
 
         $formattedDate = \Carbon\Carbon::createFromFormat('m/d/Y', $request->date)->format('Y-m-d');
 
+        $subtotal = $request->qty * $request->price;
+
         ItemIn::create([
             'item_id' => $request->item_id,
             'qty' => $request->qty,
+            'price' => $request->price,
+            'subtotal' => $subtotal,
             'date' => $formattedDate,
             'received_by'=> Auth::id(),
         ]);
@@ -180,6 +193,14 @@ class GudangController extends Controller
         return redirect()->back();
     }
 
+    public function serviceDestroy($id) {
+        $service = Service::findOrFail($id);
+
+        $service->delete();
+
+        return redirect()->route('gudang.service');
+    }
+
     public function categoryStore(Request $request)
     {
         $request->validate([
@@ -214,6 +235,14 @@ class GudangController extends Controller
 
         return redirect()->route('gudang.service')
             ->with('success', 'Category berhasil diperbarui');
+    }
+
+    public function categoryDestroy($id) {
+        $category = Category::findOrFail($id);
+
+        $category->delete();
+
+        return redirect()->route('gudang.service');
     }
 
     public function notification()
