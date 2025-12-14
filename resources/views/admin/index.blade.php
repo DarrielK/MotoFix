@@ -208,7 +208,7 @@
                                 <div class="flex text-lg font-semibold text-gray-600">
                                     Pemasukan
                                 </div>
-                                <div class="flex text-4xl font-bold text-gray-600">
+                                <div class="flex text-3xl font-bold text-gray-600">
                                     Rp {{ number_format($pemasukan, 0, ',', '.') }}
                                 </div>
                             </div>
@@ -224,7 +224,7 @@
                                 <div class="flex text-lg font-semibold text-gray-600">
                                     Pengeluaran
                                 </div>
-                                <div class="flex text-4xl font-bold text-gray-600">
+                                <div class="flex text-3xl font-bold text-gray-600">
                                     Rp {{ number_format($pengeluaran, 0, ',', '.') }}
                                 </div>
                                 <div class="flex flex-row items-center gap-2">

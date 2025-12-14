@@ -164,7 +164,10 @@ class GudangController extends Controller
             'price'=>'required',
         ]);
 
-        Service::create($request->all());
+        Service::create([
+            'name'  => $request->name,
+            'price' => str_replace('.', '', $request->price),
+        ]);
 
         return redirect()->back()->with('success', 'Service berhasil ditambahkan');
     }
@@ -186,8 +189,8 @@ class GudangController extends Controller
         ]);
 
         $services->update([
-            'name' => $request->name,
-            'price' => $request->price,
+            'name'  => $request->name,
+            'price' => str_replace('.', '', $request->price),
         ]);
 
         return redirect()->back();

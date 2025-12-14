@@ -440,37 +440,36 @@
 
         document.addEventListener('DOMContentLoaded', function () {
 
-            document.querySelectorAll('.price-display').forEach(input => {
+    document.querySelectorAll('.price-input').forEach(input => {
 
-                // FORMAT SAAT LOAD (EDIT)
-                if (input.value) {
-                    input.value = formatRupiah(input.value.replace(/\D/g, ''));
-                }
+        // FORMAT SAAT LOAD (EDIT MODE)
+        if (input.value) {
+            input.value = formatRupiah(input.value.replace(/\D/g, ''));
+        }
 
-                // FORMAT SAAT MENGETIK
-                input.addEventListener('keyup', function () {
-                    let angka = this.value.replace(/\D/g, '');
-                    this.value = formatRupiah(angka);
-                });
-
-            });
-
+        // FORMAT SAAT MENGETIK
+        input.addEventListener('keyup', function () {
+            let angka = this.value.replace(/\D/g, '');
+            this.value = formatRupiah(angka);
         });
 
-        // Formatter Rupiah
-        function formatRupiah(angka) {
-            if (!angka) return '';
-            return angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
+    });
 
-        // Sinkronkan display → raw sebelum submit
-        function preparePrice(form) {
-            const display = form.querySelector('.price-display');
-            const raw = form.querySelector('.price-raw');
+});
 
-            raw.value = display.value.replace(/\./g, '');
-            return true;
-        }
+// Formatter Rupiah (tanpa Rp)
+function formatRupiah(angka) {
+    if (!angka) return '';
+    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+// Bersihkan titik sebelum submit
+function cleanPriceBeforeSubmit() {
+    document.querySelectorAll('.price-input').forEach(input => {
+        input.value = input.value.replace(/\./g, '');
+    });
+    return true;
+}
     </script>
 </body>
 </html>
