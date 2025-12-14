@@ -29,4 +29,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/gudang/service', [GudangController::class, 'service'])->name('gudang.service');
 
     Route::resource('kasir', KasirController::class)->except('show');
+    Route::get('/kasir/search-items', [KasirController::class, 'searchItems'])->name('kasir.search.items');
+    Route::get('/kasir/search-services', [KasirController::class, 'searchServices'])->name('kasir.search.services');
 });
